@@ -1,0 +1,5 @@
+flask
+flasgger
+pymongo
+openpyxl
+python-dotenv
