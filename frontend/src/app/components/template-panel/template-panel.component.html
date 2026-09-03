@@ -1,0 +1,99 @@
+<div class="panel">
+
+  <!-- Panel Header -->
+  <div class="panel-header">
+    <div class="panel-title">
+      <i class="pi pi-table"></i>
+      <span>Excel Templates</span>
+      <span class="count-badge" *ngIf="templates.length">{{ templates.length }}</span>
+    </div>
+
+    <button
+      pButton
+      pRipple
+      icon="pi pi-refresh"
+      class="p-button-text p-button-sm refresh-btn"
+      (click)="load()"
+      [loading]="loading"
+      pTooltip="Refresh templates"
+      tooltipPosition="bottom">
+    </button>
+  </div>
+
+  <!-- Loading skeletons -->
+  <div *ngIf="loading" class="skeleton-list">
+    <div class="skeleton-item" *ngFor="let i of [1, 2, 3]">
+      <p-skeleton height="80px" borderRadius="10px"></p-skeleton>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && templates.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="pi pi-table"></i>
+    </div>
+    <p class="empty-title">No templates found</p>
+    <p class="empty-sub">Add <code>.xlsx</code> files to the templates folder</p>
+  </div>
+
+  <!-- Template list -->
+  <div class="template-list" *ngIf="!loading && templates.length">
+    <div
+      *ngFor="let t of templates"
+      class="template-item"
+      [class.selected]="selectedFile === t.file_name">
+
+      <!-- Clickable main row -->
+      <div class="template-main" (click)="selectTemplate(t)">
+        <div class="template-icon">
+          <i class="pi pi-file-excel"></i>
+        </div>
+
+        <div class="template-info">
+          <span class="template-name" [title]="t.file_name">{{ t.template_name }}</span>
+          <span class="template-file">{{ t.file_name }}</span>
+        </div>
+
+        <div class="template-actions">
+          <!-- Preview eye button -->
+          <button
+            pButton
+            pRipple
+            icon="pi pi-eye"
+            class="p-button-text p-button-sm preview-btn"
+            pTooltip="Preview Excel"
+            tooltipPosition="left"
+            (click)="openPreview(t, $event)">
+          </button>
+
+          <div class="template-check" *ngIf="selectedFile === t.file_name">
+            <i class="pi pi-check-circle"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sheet name input — visible only when this template is selected -->
+      <div class="sheet-name-row" *ngIf="selectedFile === t.file_name">
+        <label class="sheet-label">
+          <i class="pi pi-list"></i> Sheet name
+        </label>
+        <input
+          pInputText
+          type="text"
+          placeholder="e.g. Sheet1"
+          [(ngModel)]="sheetName"
+          (ngModelChange)="emitSelection(t)"
+          class="sheet-input"
+          autocomplete="off" />
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Excel Preview Dialog (rendered outside the panel) -->
+<app-excel-preview
+  [(visible)]="previewVisible"
+  [fileName]="previewFile">
+</app-excel-preview>

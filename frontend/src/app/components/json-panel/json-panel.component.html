@@ -1,0 +1,67 @@
+<div class="panel">
+
+  <!-- Panel Header -->
+  <div class="panel-header">
+    <div class="panel-title">
+      <i class="pi pi-file-edit"></i>
+      <span>JSON Files</span>
+      <span class="count-badge" *ngIf="documents.length">{{ documents.length }}</span>
+    </div>
+
+    <p-fileUpload
+      mode="basic"
+      name="file"
+      accept=".json"
+      [multiple]="true"
+      chooseLabel="Upload"
+      chooseIcon="pi pi-upload"
+      [auto]="true"
+      [customUpload]="true"
+      (uploadHandler)="onUpload($event)"
+      styleClass="upload-btn p-button-sm"
+      [disabled]="uploading"
+      pTooltip="Upload JSON files"
+      tooltipPosition="bottom">
+    </p-fileUpload>
+  </div>
+
+  <!-- Loading skeletons -->
+  <div *ngIf="loading" class="skeleton-list">
+    <div class="skeleton-item" *ngFor="let i of [1, 2, 3, 4]">
+      <p-skeleton height="58px" borderRadius="10px"></p-skeleton>
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div *ngIf="!loading && documents.length === 0" class="empty-state">
+    <div class="empty-icon">
+      <i class="pi pi-inbox"></i>
+    </div>
+    <p class="empty-title">No JSON files yet</p>
+    <p class="empty-sub">Upload a <code>.json</code> file to get started</p>
+  </div>
+
+  <!-- Document list -->
+  <div class="doc-list" *ngIf="!loading && documents.length">
+    <div
+      *ngFor="let doc of documents"
+      class="doc-item"
+      [class.selected]="selectedId === doc.document_id"
+      (click)="selectDoc(doc)">
+
+      <div class="doc-icon">
+        <i class="pi pi-file-edit"></i>
+      </div>
+
+      <div class="doc-info">
+        <span class="doc-name" [title]="doc.file_name">{{ doc.file_name }}</span>
+        <span class="doc-date">{{ doc.created_at | date:'MMM d, y · h:mm a' }}</span>
+      </div>
+
+      <div class="doc-check" *ngIf="selectedId === doc.document_id">
+        <i class="pi pi-check-circle"></i>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,240 @@
+/* ─────────────────────────────────────────
+   Template Panel Component Styles
+───────────────────────────────────────── */
+
+// ── Panel shell ──────────────────────────
+.panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+// ── Header bar ───────────────────────────
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.1rem 0.85rem;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+
+  i {
+    color: #22c55e;
+    font-size: 1rem;
+  }
+}
+
+.count-badge {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  padding: 1px 7px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+// ── Refresh button override ───────────────
+:host ::ng-deep .refresh-btn {
+  color: var(--color-muted) !important;
+
+  &:hover {
+    color: var(--color-text) !important;
+  }
+}
+
+// ── Skeleton loading list ─────────────────
+.skeleton-list {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+// ── Empty state ───────────────────────────
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.empty-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(34, 197, 94, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+
+  i {
+    font-size: 1.5rem;
+    color: #22c55e;
+  }
+}
+
+.empty-title {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
+.empty-sub {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+
+  code {
+    color: #22c55e;
+  }
+}
+
+// ── Template list ─────────────────────────
+.template-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+// ── Individual template card ──────────────
+.template-item {
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  background: transparent;
+  overflow: hidden;
+  transition: var(--transition);
+
+  &:hover {
+    background: rgba(34, 197, 94, 0.05);
+    border-color: rgba(34, 197, 94, 0.12);
+  }
+
+  &.selected {
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.35);
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15);
+  }
+}
+
+// ── Main clickable row ────────────────────
+.template-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  cursor: pointer;
+}
+
+.template-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    color: #22c55e;
+    font-size: 1rem;
+  }
+}
+
+.template-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.template-name {
+  font-size: 0.83rem;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.template-file {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ── Action buttons area ───────────────────
+.template-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+:host ::ng-deep .preview-btn {
+  color: var(--color-muted) !important;
+  padding: 0.25rem !important;
+  width: 28px !important;
+  height: 28px !important;
+
+  &:hover {
+    color: var(--color-accent-2) !important;
+    background: rgba(99, 102, 241, 0.1) !important;
+  }
+}
+
+.template-check i {
+  color: #22c55e;
+  font-size: 1rem;
+}
+
+// ── Sheet name input row ──────────────────
+.sheet-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0 0.75rem 0.65rem 0.75rem;
+}
+
+.sheet-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+
+  i {
+    font-size: 0.75rem;
+  }
+}
+
+:host ::ng-deep .sheet-input {
+  flex: 1;
+  font-size: 0.8rem !important;
+  padding: 0.35rem 0.6rem !important;
+  height: 32px !important;
+}

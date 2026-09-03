@@ -3,29 +3,32 @@ class ExcelMappingSpec:
     def upload_json():
         return {
             "tags": ["JSON Documents"],
-            "summary": "Upload a JSON document",
-            "description": "Uploads a raw JSON file to MongoDB to be used for dynamic Excel mappings.",
+            "summary": "Upload JSON document(s)",
+            "description": "Uploads one or multiple raw JSON files to MongoDB to be used for dynamic Excel mappings.",
             "parameters": [
                 {
                     "name": "file",
                     "in": "formData",
                     "type": "file",
                     "required": True,
-                    "description": "The JSON file to upload"
+                    "description": "The JSON file(s) to upload"
                 }
             ],
             "responses": {
                 "201": {
-                    "description": "JSON document uploaded successfully",
+                    "description": "JSON document(s) uploaded successfully",
                     "schema": {
                         "type": "object",
                         "properties": {
                             "success": {"type": "boolean", "example": True},
                             "data": {
-                                "type": "object",
-                                "properties": {
-                                    "document_id": {"type": "string", "example": "651a2b3c4d5e6f7a8b9c0d1e"},
-                                    "file_name": {"type": "string", "example": "data.json"}
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "document_id": {"type": "string", "example": "651a2b3c4d5e6f7a8b9c0d1e"},
+                                        "file_name": {"type": "string", "example": "data.json"}
+                                    }
                                 }
                             }
                         }
@@ -37,7 +40,7 @@ class ExcelMappingSpec:
                         "type": "object",
                         "properties": {
                             "success": {"type": "boolean", "example": False},
-                            "message": {"type": "string", "example": "Only JSON files are allowed"}
+                            "message": {"type": "string", "example": "Only JSON files are allowed."}
                         }
                     }
                 }
@@ -77,7 +80,7 @@ class ExcelMappingSpec:
                         "type": "object",
                         "properties": {
                             "success": {"type": "boolean", "example": False},
-                            "message": {"type": "string", "example": "Failed to get JSON list: database error"}
+                            "message": {"type": "string", "example": "Failed to retrieve JSON list."}
                         }
                     }
                 }
@@ -123,7 +126,7 @@ class ExcelMappingSpec:
                         "type": "object",
                         "properties": {
                             "success": {"type": "boolean", "example": False},
-                            "message": {"type": "string", "example": "JSON not found"}
+                            "message": {"type": "string", "example": "JSON not found."}
                         }
                     }
                 }
@@ -135,7 +138,7 @@ class ExcelMappingSpec:
         return {
             "tags": ["Excel Templates"],
             "summary": "Get all Excel templates",
-            "description": "Lists all available Excel (.xlsx) template files in the templates directory.",
+            "description": "Lists all available Excel (.xlsx, .xlsm) template files in the templates directory.",
             "responses": {
                 "200": {
                     "description": "A list of Excel templates",
@@ -162,7 +165,7 @@ class ExcelMappingSpec:
                         "type": "object",
                         "properties": {
                             "success": {"type": "boolean", "example": False},
-                            "message": {"type": "string", "example": "Template folder not found"}
+                            "message": {"type": "string", "example": "Template folder not found."}
                         }
                     }
                 }
@@ -170,40 +173,39 @@ class ExcelMappingSpec:
         }
 
     @staticmethod
-    def preview_template():
+    def analyze_template():
         return {
             "tags": ["Excel Templates"],
-            "summary": "Preview Excel template contents",
-            "description": "Generates a structured preview showing sheets and limited rows/cols in the template Excel.",
+            "summary": "Analyze Excel template structure",
+            "description": "Parses an uploaded Excel template file (.xlsx, .xlsm) and extracts sheet schemas, section hierarchies, and fields.",
             "parameters": [
                 {
-                    "name": "file_name",
-                    "in": "path",
-                    "type": "string",
+                    "name": "file",
+                    "in": "formData",
+                    "type": "file",
                     "required": True,
-                    "description": "The exact name of the Excel template file"
+                    "description": "The Excel template file to analyze"
                 }
             ],
             "responses": {
                 "200": {
-                    "description": "Excel template preview retrieved successfully",
+                    "description": "Excel template schema extracted successfully",
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "success": {"type": "boolean", "example": True},
-                            "data": {
+                            "file_name": {"type": "string", "example": "SalesTemplate.xlsx"},
+                            "sheets": {
                                 "type": "array",
                                 "items": {
                                     "type": "object",
                                     "properties": {
-                                        "sheet_name": {"type": "string", "example": "Sheet1"},
-                                        "rows": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "array",
-                                                "items": {"type": "string", "example": "ColumnHeader1"}
-                                            }
-                                        }
+                                        "name": {"type": "string", "example": "Sheet1"},
+                                        "max_row": {"type": "integer", "example": 50},
+                                        "max_column": {"type": "integer", "example": 10},
+                                        "value_column": {"type": "string", "example": "B"},
+                                        "sections": {"type": "array", "items": {"type": "object"}},
+                                        "orphan_fields": {"type": "array", "items": {"type": "object"}},
+                                        "needs_review": {"type": "array", "items": {"type": "integer"}}
                                     }
                                 }
                             }
@@ -211,12 +213,12 @@ class ExcelMappingSpec:
                     }
                 },
                 "400": {
-                    "description": "Excel template file not found or invalid format",
+                    "description": "Invalid template file or format",
                     "schema": {
                         "type": "object",
                         "properties": {
                             "success": {"type": "boolean", "example": False},
-                            "message": {"type": "string", "example": "Excel template not found"}
+                            "message": {"type": "string", "example": "Only .xlsx and .xlsm templates are supported."}
                         }
                     }
                 }
@@ -224,67 +226,11 @@ class ExcelMappingSpec:
         }
 
     @staticmethod
-    def get_template_headers():
+    def create_mapping():
         return {
-            "tags": ["Excel Templates"],
-            "summary": "Get headers of a specific sheet in a template",
-            "description": "Extracts the header columns (from row 1) of the designated template sheet.",
-            "parameters": [
-                {
-                    "name": "file_name",
-                    "in": "path",
-                    "type": "string",
-                    "required": True,
-                    "description": "The template Excel file name"
-                },
-                {
-                    "name": "sheet_name",
-                    "in": "query",
-                    "type": "string",
-                    "required": True,
-                    "description": "The specific sheet inside the template to inspect"
-                }
-            ],
-            "responses": {
-                "200": {
-                    "description": "Template headers retrieved successfully",
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "success": {"type": "boolean", "example": True},
-                            "data": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "column": {"type": "string", "example": "A"},
-                                        "excel_column": {"type": "string", "example": "A"},
-                                        "header_name": {"type": "string", "example": "User Name"}
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Template file or sheet not found",
-                    "schema": {
-                        "type": "object",
-                        "properties": {
-                            "success": {"type": "boolean", "example": False},
-                            "message": {"type": "string", "example": "Sheet not found"}
-                        }
-                    }
-                }
-            }
-        }
-
-    @staticmethod
-    def generate_excel():
-        return {
-            "tags": ["Excel Generation"],
-            "summary": "Generate Excel spreadsheet using mappings",
-            "description": "Generates a mapped Excel spreadsheet by correlating fields from a JSON document to the headers of an Excel template sheet, saving it locally.",
+            "tags": ["Excel Mappings"],
+            "summary": "Create mapping between JSON and Excel template",
+            "description": "Generates and saves field mappings between a specified JSON document and an Excel template sheet.",
             "parameters": [
                 {
                     "name": "body",
@@ -302,6 +248,63 @@ class ExcelMappingSpec:
                 }
             ],
             "responses": {
+                "200": {
+                    "description": "Mapping created successfully",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "success": {"type": "boolean", "example": True},
+                            "data": {
+                                "type": "object",
+                                "properties": {
+                                    "mapping_id": {"type": "string", "example": "651a2b3c4d5e6f7a8b9c0d99"},
+                                    "document_id": {"type": "string", "example": "651a2b3c4d5e6f7a8b9c0d1e"},
+                                    "template_file": {"type": "string", "example": "SalesTemplate.xlsx"},
+                                    "sheet_name": {"type": "string", "example": "Sheet1"},
+                                    "mapping_count": {"type": "integer", "example": 15},
+                                    "mappings": {"type": "array", "items": {"type": "object"}}
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "JSON/Template not found or no fields mapped",
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "success": {"type": "boolean", "example": False},
+                            "message": {"type": "string", "example": "No JSON fields could be mapped to the Excel template."}
+                        }
+                    }
+                }
+            }
+        }
+
+    @staticmethod
+    def generate_excel():
+        return {
+            "tags": ["Excel Generation"],
+            "summary": "Generate Excel spreadsheet using mappings",
+            "description": "Populates an Excel template sheet with data from a JSON document using existing or newly generated mappings.",
+            "parameters": [
+                {
+                    "name": "body",
+                    "in": "body",
+                    "required": True,
+                    "schema": {
+                        "type": "object",
+                        "required": ["document_id", "template_file", "sheet_name"],
+                        "properties": {
+                            "document_id": {"type": "string", "example": "651a2b3c4d5e6f7a8b9c0d1e"},
+                            "template_file": {"type": "string", "example": "SalesTemplate.xlsx"},
+                            "sheet_name": {"type": "string", "example": "Sheet1"},
+                            "mapping_id": {"type": "string", "example": "651a2b3c4d5e6f7a8b9c0d99", "description": "Optional pre-existing mapping ID"}
+                        }
+                    }
+                }
+            ],
+            "responses": {
                 "201": {
                     "description": "Excel spreadsheet generated successfully",
                     "schema": {
@@ -312,7 +315,19 @@ class ExcelMappingSpec:
                                 "type": "object",
                                 "properties": {
                                     "export_id": {"type": "string", "example": "651a2b3c4d5e6f7a8b9c0d2f"},
-                                    "file_name": {"type": "string", "example": "1a2b3c4d5e6f7a8b9c0d.xlsx"}
+                                    "file_name": {"type": "string", "example": "1a2b3c4d5e6f7a8b9c0d.xlsx"},
+                                    "mapping_id": {"type": "string", "example": "651a2b3c4d5e6f7a8b9c0d99"},
+                                    "mapping_count": {"type": "integer", "example": 15},
+                                    "written": {
+                                        "type": "object",
+                                        "properties": {
+                                            "scalar_values_written": {"type": "integer", "example": 10},
+                                            "repeating_values_written": {"type": "integer", "example": 25},
+                                            "empty_values": {"type": "integer", "example": 2},
+                                            "total_mappings": {"type": "integer", "example": 37},
+                                            "truncated_values": {"type": "integer", "example": 0}
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -324,7 +339,7 @@ class ExcelMappingSpec:
                         "type": "object",
                         "properties": {
                             "success": {"type": "boolean", "example": False},
-                            "message": {"type": "string", "example": "No mapping could be created"}
+                            "message": {"type": "string", "example": "No JSON fields could be mapped."}
                         }
                     }
                 }
@@ -366,7 +381,7 @@ class ExcelMappingSpec:
                         "type": "object",
                         "properties": {
                             "success": {"type": "boolean", "example": False},
-                            "message": {"type": "string", "example": "Export not found"}
+                            "message": {"type": "string", "example": "Export not found."}
                         }
                     }
                 }

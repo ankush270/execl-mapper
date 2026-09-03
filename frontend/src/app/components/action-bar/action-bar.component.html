@@ -1,0 +1,53 @@
+<div class="action-bar">
+
+  <!-- Selection summary chips -->
+  <div class="selections">
+
+    <!-- JSON chip -->
+    <div class="sel-chip" [class.active]="selectedDoc">
+      <i class="pi pi-file-edit"></i>
+      <span>{{ selectedDoc?.file_name ?? 'No JSON selected' }}</span>
+    </div>
+
+    <div class="sel-divider">
+      <i class="pi pi-arrow-right"></i>
+    </div>
+
+    <!-- Template chip -->
+    <div class="sel-chip" [class.active]="templateSel">
+      <i class="pi pi-file-excel"></i>
+      <span>{{ templateSel?.template?.file_name ?? 'No template selected' }}</span>
+    </div>
+
+    <!-- Sheet name chip (shown only after template selected) -->
+    <ng-container *ngIf="templateSel">
+      <div class="sel-divider">
+        <i class="pi pi-list"></i>
+      </div>
+
+      <div class="sel-chip sheet-chip" [class.active]="templateSel.sheetName">
+        <span *ngIf="templateSel.sheetName">{{ templateSel.sheetName }}</span>
+        <span class="hint" *ngIf="!templateSel.sheetName">Enter sheet name ↑</span>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <!-- Generate & Download button -->
+  <button
+    pButton
+    pRipple
+    [label]="generating ? 'Generating…' : 'Generate & Download'"
+    [icon]="generating ? '' : 'pi pi-download'"
+    class="generate-btn"
+    [disabled]="!canGenerate || generating"
+    (click)="generate()">
+    <p-progressSpinner
+      *ngIf="generating"
+      strokeWidth="4"
+      animationDuration=".7s"
+      styleClass="btn-spinner">
+    </p-progressSpinner>
+  </button>
+
+</div>

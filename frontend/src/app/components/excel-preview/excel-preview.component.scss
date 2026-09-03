@@ -1,0 +1,130 @@
+/* ─────────────────────────────────────────
+   Excel Preview Component Styles
+───────────────────────────────────────── */
+
+// ── Dialog header ───────────────────────
+.preview-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #e2e8f0;
+}
+
+.preview-title {
+  color: #e2e8f0;
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.preview-badge {
+  background: rgba(99, 102, 241, 0.2);
+  color: #818cf8;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+// ── Loading & error states ───────────────
+.preview-loading,
+.preview-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 1rem;
+  padding: 3rem;
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+.preview-error i {
+  font-size: 2rem;
+  color: #ef4444;
+}
+
+// ── Sheet content wrapper ────────────────
+.preview-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// ── PrimeNG TabView overrides ────────────
+:host ::ng-deep .preview-tabs {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .preview-tabs .p-tabview-panels {
+  flex: 1;
+  overflow: hidden;
+  padding: 0;
+  background: #1e2333;
+}
+
+:host ::ng-deep .preview-tabs .p-tabview-nav {
+  background: #161a23;
+  border-bottom: 1px solid #2a2f3d;
+  padding: 0 0.75rem;
+}
+
+:host ::ng-deep .preview-tabs .p-tabview-nav li .p-tabview-nav-link {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  border-radius: 6px 6px 0 0;
+  transition: all 0.15s;
+}
+
+:host ::ng-deep .preview-tabs .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  color: #818cf8;
+  background: rgba(99, 102, 241, 0.12);
+  border-bottom: 2px solid #6366f1;
+}
+
+// ── Sheet table container ────────────────
+.sheet-container {
+  height: 100%;
+  overflow: auto;
+  background: #fff;
+}
+
+.excel-table-wrap {
+  padding: 0;
+  min-width: 100%;
+}
+
+// ── Generated Excel table styles ─────────
+:host ::ng-deep .excel-table-wrap table {
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: 'Calibri', 'Arial', sans-serif;
+  min-width: 100%;
+}
+
+:host ::ng-deep .excel-table-wrap td,
+:host ::ng-deep .excel-table-wrap th {
+  border: 1px solid #d0d7de;
+  padding: 3px 6px;
+  white-space: nowrap;
+  vertical-align: middle;
+  min-width: 80px;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #000;
+  background: #fff;
+}

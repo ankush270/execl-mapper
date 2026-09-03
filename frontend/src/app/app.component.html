@@ -1,0 +1,60 @@
+<p-toast
+  position="top-right"
+  [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}">
+</p-toast>
+
+<div class="app-shell">
+
+  <!-- ── App Header ──────────────────────── -->
+  <header class="app-header">
+    <div class="header-brand">
+      <div class="brand-icon">
+        <i class="pi pi-file-excel"></i>
+      </div>
+      <div class="brand-text">
+        <span class="brand-name">Excel Mapper</span>
+        <span class="brand-sub">JSON → Excel Automation</span>
+      </div>
+    </div>
+
+    <div class="header-meta">
+      <div class="status-dot"></div>
+      <span class="status-label">Backend connected</span>
+    </div>
+  </header>
+
+  <!-- ── Main Workspace ─────────────────── -->
+  <main class="workspace">
+
+    <div class="panels-row">
+
+      <!-- Left panel: JSON files -->
+      <div class="panel-col">
+        <app-json-panel (docSelected)="onDocSelected($event)"></app-json-panel>
+      </div>
+
+      <!-- Column divider -->
+      <div class="col-divider">
+        <div class="divider-line"></div>
+        <div class="divider-icon">
+          <i class="pi pi-arrow-right-arrow-left"></i>
+        </div>
+        <div class="divider-line"></div>
+      </div>
+
+      <!-- Right panel: Excel templates -->
+      <div class="panel-col">
+        <app-template-panel (templateSelected)="onTemplateSelected($event)"></app-template-panel>
+      </div>
+
+    </div>
+
+    <!-- Bottom action bar -->
+    <app-action-bar
+      [selectedDoc]="selectedDoc"
+      [templateSel]="templateSel">
+    </app-action-bar>
+
+  </main>
+
+</div>

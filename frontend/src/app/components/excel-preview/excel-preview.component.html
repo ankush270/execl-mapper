@@ -1,0 +1,54 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="true"
+  [resizable]="true"
+  [style]="{ width: '92vw', height: '90vh' }"
+  [contentStyle]="{ padding: '0', overflow: 'hidden', height: 'calc(90vh - 110px)' }"
+  (onHide)="onClose()"
+  appendTo="body">
+
+  <!-- Dialog Header -->
+  <ng-template pTemplate="header">
+    <div class="preview-header">
+      <i class="pi pi-file-excel" style="color: #22c55e; font-size: 1.2rem;"></i>
+      <span class="preview-title">{{ fileName }}</span>
+      <span class="preview-badge">Preview</span>
+    </div>
+  </ng-template>
+
+  <!-- Loading state -->
+  <div *ngIf="loading" class="preview-loading">
+    <p-progressSpinner strokeWidth="3" animationDuration=".8s"></p-progressSpinner>
+    <p>Loading Excel file…</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error && !loading" class="preview-error">
+    <i class="pi pi-exclamation-circle"></i>
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Sheet Tabs -->
+  <div *ngIf="!loading && !error && sheets.length" class="preview-content">
+    <p-tabView styleClass="preview-tabs">
+      <p-tabPanel *ngFor="let sheet of sheets" [header]="sheet.name">
+        <div class="sheet-container">
+          <div class="excel-table-wrap" [innerHTML]="sheet.html"></div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+
+  <!-- Dialog Footer -->
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      label="Close"
+      icon="pi pi-times"
+      class="p-button-text p-button-sm"
+      (click)="visible = false">
+    </button>
+  </ng-template>
+
+</p-dialog>
